@@ -64,7 +64,7 @@ target_link_libraries(PlumbCAD PRIVATE glfw glm::glm glad_gl_core_33 imgui_backe
 target_compile_definitions(PlumbCAD PRIVATE ASSET_DIR="${CMAKE_CURRENT_SOURCE_DIR}/assets")
 
 if(MSVC)
-    target_compile_options(PlumbCAD PRIVATE /W4 /permissive-)
+    target_compile_options(PlumbCAD PRIVATE /W4 /permissive- /utf-8)
 else()
     target_compile_options(PlumbCAD PRIVATE -Wall -Wextra -Wpedantic)
 endif()

@@ -1,0 +1,109 @@
+﻿ID;Végpont;Vizsgálat;Eredmény;Részletek
+1;0;Nyitott csővégek / Kapcsolt vég;MEGFELELT;A végpont csatlakoztatva van.
+1;1;Nyitott csővégek / Kapcsolt vég;MEGFELELT;A végpont csatlakoztatva van.
+2;0;Nyitott csővégek / Kapcsolt vég;MEGFELELT;A végpont csatlakoztatva van.
+2;1;Nyitott csővégek / Kapcsolt vég;MEGFELELT;A végpont csatlakoztatva van.
+3;0;Nyitott csővégek / Kapcsolt vég;MEGFELELT;A végpont csatlakoztatva van.
+3;1;Nyitott csővégek / Kapcsolt vég;MEGFELELT;A végpont csatlakoztatva van.
+4;0;Nyitott csővégek / Kapcsolt vég;MEGFELELT;A végpont csatlakoztatva van.
+4;1;Nyitott csővégek / Kapcsolt vég;MEGFELELT;A végpont csatlakoztatva van.
+5;0;Nyitott csővégek / Kapcsolt vég;MEGFELELT;A végpont csatlakoztatva van.
+5;1;Nyitott csővégek / Kapcsolt vég;MEGFELELT;A végpont csatlakoztatva van.
+6;0;Nyitott csővégek / Kapcsolt vég;MEGFELELT;A végpont csatlakoztatva van.
+6;1;Nyitott csővégek / Kapcsolt vég;MEGFELELT;A végpont csatlakoztatva van.
+7;0;Nyitott csővégek / Kapcsolt vég;MEGFELELT;A végpont csatlakoztatva van.
+7;1;Nyitott csővégek / Kapcsolt vég;MEGFELELT;A végpont csatlakoztatva van.
+8;0;Nyitott csővégek / Kapcsolt vég;MEGFELELT;A végpont csatlakoztatva van.
+8;1;Nyitott csővégek / Kapcsolt vég;MEGFELELT;A végpont csatlakoztatva van.
+9;0;Nyitott csővégek / Kapcsolt vég;MEGFELELT;A végpont csatlakoztatva van.
+9;1;Nyitott csővégek / Kapcsolt vég;MEGFELELT;A végpont csatlakoztatva van.
+10;0;Nyitott csővégek / Kapcsolt vég;MEGFELELT;A végpont csatlakoztatva van.
+10;1;Nyitott csővégek / Kapcsolt vég;MEGFELELT;A végpont csatlakoztatva van.
+11;0;Nyitott csővégek / Kapcsolt vég;MEGFELELT;A végpont csatlakoztatva van.
+11;1;Nyitott csővégek / Kapcsolt vég;MEGFELELT;A végpont csatlakoztatva van.
+12;0;Nyitott csővégek / Kapcsolt vég;MEGFELELT;A végpont csatlakoztatva van.
+12;1;Nyitott csővégek / Kapcsolt vég;MEGFELELT;A végpont csatlakoztatva van.
+13;0;Nyitott csővégek / Kapcsolt vég;MEGFELELT;A végpont csatlakoztatva van.
+13;1;Nyitott csővégek / Kapcsolt vég;MEGFELELT;A végpont csatlakoztatva van.
+14;0;Nyitott csővégek / Kapcsolt vég;MEGFELELT;A végpont csatlakoztatva van.
+14;1;Nyitott csővégek / Kapcsolt vég;MEGFELELT;A végpont csatlakoztatva van.
+15;0;Nyitott csővégek / Kapcsolt vég;MEGFELELT;A végpont csatlakoztatva van.
+15;1;Nyitott csővégek / Kapcsolt vég;MEGFELELT;A végpont csatlakoztatva van.
+17;0;Nyitott csővégek / Kapcsolt vég;MEGFELELT;A végpont csatlakoztatva van.
+19;0;Nyitott csővégek / Kapcsolt vég;MEGFELELT;A végpont csatlakoztatva van.
+;;Nyitott csővégek összesítés / MEGFELELT;MEGFELELT;Nyitott csővégek ellenőrzése. Vizsgált csatlakozási pontok: 32, kapcsolt: 32, szándékos nyitott vég: 0, hibás nyitott vég: 0. EREDMÉNY: MEGFELELT.
+1;;Izolált elemek / Kapcsolt elem;MEGFELELT;Érvényes kapcsolatok száma: 2.
+2;;Izolált elemek / Kapcsolt elem;MEGFELELT;Érvényes kapcsolatok száma: 2.
+3;;Izolált elemek / Kapcsolt elem;MEGFELELT;Érvényes kapcsolatok száma: 2.
+4;;Izolált elemek / Kapcsolt elem;MEGFELELT;Érvényes kapcsolatok száma: 2.
+5;;Izolált elemek / Kapcsolt elem;MEGFELELT;Érvényes kapcsolatok száma: 2.
+6;;Izolált elemek / Kapcsolt elem;MEGFELELT;Érvényes kapcsolatok száma: 2.
+7;;Izolált elemek / Kapcsolt elem;MEGFELELT;Érvényes kapcsolatok száma: 2.
+8;;Izolált elemek / Kapcsolt elem;MEGFELELT;Érvényes kapcsolatok száma: 2.
+9;;Izolált elemek / Kapcsolt elem;MEGFELELT;Érvényes kapcsolatok száma: 2.
+10;;Izolált elemek / Kapcsolt elem;MEGFELELT;Érvényes kapcsolatok száma: 2.
+11;;Izolált elemek / Kapcsolt elem;MEGFELELT;Érvényes kapcsolatok száma: 2.
+12;;Izolált elemek / Kapcsolt elem;MEGFELELT;Érvényes kapcsolatok száma: 2.
+13;;Izolált elemek / Kapcsolt elem;MEGFELELT;Érvényes kapcsolatok száma: 2.
+14;;Izolált elemek / Kapcsolt elem;MEGFELELT;Érvényes kapcsolatok száma: 2.
+15;;Izolált elemek / Kapcsolt elem;MEGFELELT;Érvényes kapcsolatok száma: 2.
+17;;Izolált elemek / Kapcsolt elem;MEGFELELT;Érvényes kapcsolatok száma: 1.
+19;;Izolált elemek / Kapcsolt elem;MEGFELELT;Érvényes kapcsolatok száma: 1.
+;;Izolált elemek összesítés / MEGFELELT;MEGFELELT;Izolált elemek ellenőrzése. Vizsgált elemek: 17, legalább egy érvényes kapcsolattal rendelkező elemek: 17, izolált elemek: 0. EREDMÉNY: MEGFELELT.
+1;;Fő hálózatrész / MEGFELELT;MEGFELELT;Fő hálózatrész: 17 elem. Elem ID-k: #1, #2, #3, #4, #5, #6, #7, #8, #9, #10, #11, #12, #13, #14, #15, #17, #19. EREDMÉNY: MEGFELELT.
+;;Hálózat összefüggősége összesítés / MEGFELELT;MEGFELELT;Kapcsolt hálózat összefüggőségi vizsgálata. Vizsgált elemek: 17, kapcsolt hálózatrészek száma: 1, fő hálózat elemei: 17, különálló hálózatrészek: 0, hibás kapcsolat-hivatkozások: 0, közvetlen átmérő-eltérések: 0. EREDMÉNY: MEGFELELT.
+1;;Vízhálózati alapadatok / MEGFELELT;MEGFELELT;Egyenes csőszakasz #1: anyag=PVC-U, külső átmérő=75.00 mm, falvastagság=1.90 mm, belső átmérő=71.20 mm, tervezési nyomás=6.00 bar, hossz=1.000 m, katalógus-hivatkozás=érvényes. EREDMÉNY: MEGFELELT.
+2;;Vízhálózati alapadatok / MEGFELELT;MEGFELELT;Egyenes csőszakasz #2: anyag=PVC-U, külső átmérő=75.00 mm, falvastagság=1.90 mm, belső átmérő=71.20 mm, tervezési nyomás=6.00 bar, hossz=1.000 m, katalógus-hivatkozás=érvényes. EREDMÉNY: MEGFELELT.
+3;;Vízhálózati alapadatok / MEGFELELT;MEGFELELT;Egyenes csőszakasz #3: anyag=PVC-U, külső átmérő=75.00 mm, falvastagság=1.90 mm, belső átmérő=71.20 mm, tervezési nyomás=6.00 bar, hossz=0.290 m, katalógus-hivatkozás=érvényes. EREDMÉNY: MEGFELELT.
+4;;Vízhálózati alapadatok / MEGFELELT;MEGFELELT;90° könyök #4: anyag=PVC-U, külső átmérő=75.00 mm, falvastagság=1.90 mm, belső átmérő=71.20 mm, tervezési nyomás=6.00 bar, hossz=0.094 m, katalógus-hivatkozás=érvényes. EREDMÉNY: MEGFELELT.
+5;;Vízhálózati alapadatok / MEGFELELT;MEGFELELT;Egyenes csőszakasz #5: anyag=PVC-U, külső átmérő=75.00 mm, falvastagság=1.90 mm, belső átmérő=71.20 mm, tervezési nyomás=6.00 bar, hossz=0.240 m, katalógus-hivatkozás=érvényes. EREDMÉNY: MEGFELELT.
+6;;Vízhálózati alapadatok / MEGFELELT;MEGFELELT;45° könyök #6: anyag=PVC-U, külső átmérő=75.00 mm, falvastagság=1.90 mm, belső átmérő=71.20 mm, tervezési nyomás=6.00 bar, hossz=0.094 m, katalógus-hivatkozás=érvényes. EREDMÉNY: MEGFELELT.
+7;;Vízhálózati alapadatok / MEGFELELT;MEGFELELT;Egyenes csőszakasz #7: anyag=PVC-U, külső átmérő=75.00 mm, falvastagság=1.90 mm, belső átmérő=71.20 mm, tervezési nyomás=6.00 bar, hossz=0.396 m, katalógus-hivatkozás=érvényes. EREDMÉNY: MEGFELELT.
+8;;Vízhálózati alapadatok / MEGFELELT;MEGFELELT;45° könyök #8: anyag=PVC-U, külső átmérő=75.00 mm, falvastagság=1.90 mm, belső átmérő=71.20 mm, tervezési nyomás=6.00 bar, hossz=0.094 m, katalógus-hivatkozás=érvényes. EREDMÉNY: MEGFELELT.
+9;;Vízhálózati alapadatok / MEGFELELT;MEGFELELT;Egyenes csőszakasz #9: anyag=PVC-U, külső átmérő=75.00 mm, falvastagság=1.90 mm, belső átmérő=71.20 mm, tervezési nyomás=6.00 bar, hossz=3.751 m, katalógus-hivatkozás=érvényes. EREDMÉNY: MEGFELELT.
+10;;Vízhálózati alapadatok / MEGFELELT;MEGFELELT;45° könyök #10: anyag=PVC-U, külső átmérő=75.00 mm, falvastagság=1.90 mm, belső átmérő=71.20 mm, tervezési nyomás=6.00 bar, hossz=0.094 m, katalógus-hivatkozás=érvényes. EREDMÉNY: MEGFELELT.
+11;;Vízhálózati alapadatok / MEGFELELT;MEGFELELT;Egyenes csőszakasz #11: anyag=PVC-U, külső átmérő=75.00 mm, falvastagság=1.90 mm, belső átmérő=71.20 mm, tervezési nyomás=6.00 bar, hossz=0.721 m, katalógus-hivatkozás=érvényes. EREDMÉNY: MEGFELELT.
+12;;Vízhálózati alapadatok / MEGFELELT;MEGFELELT;45° könyök #12: anyag=PVC-U, külső átmérő=75.00 mm, falvastagság=1.90 mm, belső átmérő=71.20 mm, tervezési nyomás=6.00 bar, hossz=0.094 m, katalógus-hivatkozás=érvényes. EREDMÉNY: MEGFELELT.
+13;;Vízhálózati alapadatok / MEGFELELT;MEGFELELT;Egyenes csőszakasz #13: anyag=PVC-U, külső átmérő=75.00 mm, falvastagság=1.90 mm, belső átmérő=71.20 mm, tervezési nyomás=6.00 bar, hossz=2.760 m, katalógus-hivatkozás=érvényes. EREDMÉNY: MEGFELELT.
+14;;Vízhálózati alapadatok / MEGFELELT;MEGFELELT;90° könyök #14: anyag=PVC-U, külső átmérő=75.00 mm, falvastagság=1.90 mm, belső átmérő=71.20 mm, tervezési nyomás=6.00 bar, hossz=0.094 m, katalógus-hivatkozás=érvényes. EREDMÉNY: MEGFELELT.
+15;;Vízhálózati alapadatok / MEGFELELT;MEGFELELT;90° könyök #15: anyag=PVC-U, külső átmérő=75.00 mm, falvastagság=1.90 mm, belső átmérő=71.20 mm, tervezési nyomás=6.00 bar, hossz=0.094 m, katalógus-hivatkozás=érvényes. EREDMÉNY: MEGFELELT.
+17;;Vízhálózati alapadatok / MEGFELELT;MEGFELELT;Végzáró #17: anyag=PVC-U, külső átmérő=75.00 mm, falvastagság=1.90 mm, belső átmérő=71.20 mm, tervezési nyomás=6.00 bar, hossz=0.100 m, katalógus-hivatkozás=érvényes. EREDMÉNY: MEGFELELT.
+19;;Vízhálózati alapadatok / MEGFELELT;MEGFELELT;Végzáró #19: anyag=PVC-U, külső átmérő=75.00 mm, falvastagság=1.90 mm, belső átmérő=71.20 mm, tervezési nyomás=6.00 bar, hossz=0.100 m, katalógus-hivatkozás=érvényes. EREDMÉNY: MEGFELELT.
+;;Vízhálózati alapadatok összesítés / MEGFELELT;MEGFELELT;Vízhálózati alapadat-ellenőrzés. Vizsgált elemek: 17, megfelelt: 17, hibás: 0. EREDMÉNY: MEGFELELT.
+1;;Projekt nyomáspróba összesítés / MEGFELELT;MEGFELELT;Vizsgált kapcsolt hálózatrész: 17 elem. Tervezési nyomás: 6.000 bar. Próbanyomás: 9.000 bar. Tartási idő: 30.000 perc. Kezdeti mért nyomás: 9.000 bar. Végső mért nyomás: 9.000 bar. Számított nyomásesés: 0.000 bar. Megengedett nyomásesés: 0.200 bar. Alacsonyabb tervezési nyomású hálózati elemek: 0. EREDMÉNY: MEGFELELT.
+1;1;Nyílt vízellátási referencia - Sebesség / AJÁNLOTT;MEGFELELT;"Egyenes cső #1: Di=71.200 mm, Q=0.200 l/s, v=0.050 m/s. Nyílt referencia: <=1.5 m/s konzervatív tervezési cél; <=3.0 m/s NCC hidegvíz felső teljesítményhatár. EREDMÉNY: AJÁNLOTT."
+3;0;Nyílt vízellátási referencia - Sebesség / AJÁNLOTT;MEGFELELT;"Egyenes cső #3: Di=71.200 mm, Q=0.200 l/s, v=0.050 m/s. Nyílt referencia: <=1.5 m/s konzervatív tervezési cél; <=3.0 m/s NCC hidegvíz felső teljesítményhatár. EREDMÉNY: AJÁNLOTT."
+5;0;Nyílt vízellátási referencia - Sebesség / AJÁNLOTT;MEGFELELT;"Egyenes cső #5: Di=71.200 mm, Q=0.200 l/s, v=0.050 m/s. Nyílt referencia: <=1.5 m/s konzervatív tervezési cél; <=3.0 m/s NCC hidegvíz felső teljesítményhatár. EREDMÉNY: AJÁNLOTT."
+7;0;Nyílt vízellátási referencia - Sebesség / AJÁNLOTT;MEGFELELT;"Egyenes cső #7: Di=71.200 mm, Q=0.200 l/s, v=0.050 m/s. Nyílt referencia: <=1.5 m/s konzervatív tervezési cél; <=3.0 m/s NCC hidegvíz felső teljesítményhatár. EREDMÉNY: AJÁNLOTT."
+9;0;Nyílt vízellátási referencia - Sebesség / AJÁNLOTT;MEGFELELT;"Egyenes cső #9: Di=71.200 mm, Q=0.200 l/s, v=0.050 m/s. Nyílt referencia: <=1.5 m/s konzervatív tervezési cél; <=3.0 m/s NCC hidegvíz felső teljesítményhatár. EREDMÉNY: AJÁNLOTT."
+11;0;Nyílt vízellátási referencia - Sebesség / AJÁNLOTT;MEGFELELT;"Egyenes cső #11: Di=71.200 mm, Q=0.200 l/s, v=0.050 m/s. Nyílt referencia: <=1.5 m/s konzervatív tervezési cél; <=3.0 m/s NCC hidegvíz felső teljesítményhatár. EREDMÉNY: AJÁNLOTT."
+13;0;Nyílt vízellátási referencia - Sebesség / AJÁNLOTT;MEGFELELT;"Egyenes cső #13: Di=71.200 mm, Q=0.200 l/s, v=0.050 m/s. Nyílt referencia: <=1.5 m/s konzervatív tervezési cél; <=3.0 m/s NCC hidegvíz felső teljesítményhatár. EREDMÉNY: AJÁNLOTT."
+2;1;Nyílt vízellátási referencia - Sebesség / AJÁNLOTT;MEGFELELT;"Egyenes cső #2: Di=71.200 mm, Q=0.200 l/s, v=0.050 m/s. Nyílt referencia: <=1.5 m/s konzervatív tervezési cél; <=3.0 m/s NCC hidegvíz felső teljesítményhatár. EREDMÉNY: AJÁNLOTT."
+2;0;Nyílt vízellátási referencia - Sebesség összesítés;MEGFELELT;Nyílt vízellátási sebesség-referencia. Vizsgált csövek: 8, <=1.5 m/s: 8, 1.5-3.0 m/s figyelmeztetés: 0, >3.0 m/s hiba: 0, nem számítható: 0. EREDMÉNY: MEGFELELT A FELSŐ HATÁRNAK.
+1;1;Nyílt lefolyási referencia - Table 6 / MEGFELELT;MEGFELELT;MEGFELELT: a lejtés és a Table 6 kapacitás megfelelő. Érintett elem: #1.
+3;0;Nyílt lefolyási referencia - Table 6 / MEGFELELT;MEGFELELT;MEGFELELT: a lejtés és a Table 6 kapacitás megfelelő. Érintett elem: #3.
+5;0;Nyílt lefolyási referencia - Table 6 / MEGFELELT;MEGFELELT;MEGFELELT: a lejtés és a Table 6 kapacitás megfelelő. Érintett elem: #5.
+7;0;Nyílt lefolyási referencia - Table 6 / MEGFELELT;MEGFELELT;MEGFELELT: a lejtés és a Table 6 kapacitás megfelelő. Érintett elem: #7.
+9;0;Nyílt lefolyási referencia - Table 6 / MEGFELELT;MEGFELELT;MEGFELELT: a lejtés és a Table 6 kapacitás megfelelő. Érintett elem: #9.
+11;0;Nyílt lefolyási referencia - Table 6 / MEGFELELT;MEGFELELT;MEGFELELT: a lejtés és a Table 6 kapacitás megfelelő. Érintett elem: #11.
+13;0;Nyílt lefolyási referencia - Table 6 / MEGFELELT;MEGFELELT;MEGFELELT: a lejtés és a Table 6 kapacitás megfelelő. Érintett elem: #13.
+2;1;Nyílt lefolyási referencia - Table 6 / MEGFELELT;MEGFELELT;MEGFELELT: a lejtés és a Table 6 kapacitás megfelelő. Érintett elem: #2.
+2;0;Nyílt lefolyási referencia - Gravitációs lefolyás összesítése;MEGFELELT;"Gravitációs lefolyás ellenőrzése, 0.200 l/s csúcstérfogatáramnál.
+Ellenőrzött szakaszok: 8. Megfelelt: 8. Figyelmeztetés: 0. Hibás: 0.
+A vizsgálat a lejtést és a kapacitást az Approved Document H 6. táblázatához hasonlítja."
+1;1;Darcy-Weisbach - Elemveszteség;MEGFELELT;Egyenes csőszakasz #1: Δp=0.0000 bar (súrlódás=0.0000 bar, L=1.000 m, Di=71.200 mm, v=0.050 m/s, Re=3562, f=0.0422)
+3;0;Darcy-Weisbach - Elemveszteség;MEGFELELT;Egyenes csőszakasz #3: Δp=0.0000 bar (súrlódás=0.0000 bar, L=0.290 m, Di=71.200 mm, v=0.050 m/s, Re=3562, f=0.0422)
+4;0;Darcy-Weisbach - Elemveszteség;MEGFELELT;90° könyök #4: Δp=0.0000 bar (helyi veszteség, K=0.90, v=0.050 m/s)
+5;0;Darcy-Weisbach - Elemveszteség;MEGFELELT;Egyenes csőszakasz #5: Δp=0.0000 bar (súrlódás=0.0000 bar, L=0.240 m, Di=71.200 mm, v=0.050 m/s, Re=3562, f=0.0422)
+6;0;Darcy-Weisbach - Elemveszteség;MEGFELELT;45° könyök #6: Δp=0.0000 bar (helyi veszteség, K=0.40, v=0.050 m/s)
+7;0;Darcy-Weisbach - Elemveszteség;MEGFELELT;Egyenes csőszakasz #7: Δp=0.0000 bar (súrlódás=0.0000 bar, L=0.396 m, Di=71.200 mm, v=0.050 m/s, Re=3562, f=0.0422)
+8;0;Darcy-Weisbach - Elemveszteség;MEGFELELT;45° könyök #8: Δp=0.0000 bar (helyi veszteség, K=0.40, v=0.050 m/s)
+9;0;Darcy-Weisbach - Elemveszteség;MEGFELELT;Egyenes csőszakasz #9: Δp=0.0000 bar (súrlódás=0.0000 bar, L=3.751 m, Di=71.200 mm, v=0.050 m/s, Re=3562, f=0.0422)
+10;0;Darcy-Weisbach - Elemveszteség;MEGFELELT;45° könyök #10: Δp=0.0000 bar (helyi veszteség, K=0.40, v=0.050 m/s)
+11;0;Darcy-Weisbach - Elemveszteség;MEGFELELT;Egyenes csőszakasz #11: Δp=0.0000 bar (súrlódás=0.0000 bar, L=0.721 m, Di=71.200 mm, v=0.050 m/s, Re=3562, f=0.0422)
+12;0;Darcy-Weisbach - Elemveszteség;MEGFELELT;45° könyök #12: Δp=0.0000 bar (helyi veszteség, K=0.40, v=0.050 m/s)
+13;0;Darcy-Weisbach - Elemveszteség;MEGFELELT;Egyenes csőszakasz #13: Δp=0.0000 bar (súrlódás=0.0000 bar, L=2.760 m, Di=71.200 mm, v=0.050 m/s, Re=3562, f=0.0422)
+14;0;Darcy-Weisbach - Elemveszteség;MEGFELELT;90° könyök #14: Δp=0.0000 bar (helyi veszteség, K=0.90, v=0.050 m/s)
+15;0;Darcy-Weisbach - Elemveszteség;MEGFELELT;90° könyök #15: Δp=0.0000 bar (helyi veszteség, K=0.90, v=0.050 m/s)
+2;1;Darcy-Weisbach - Elemveszteség;MEGFELELT;Egyenes csőszakasz #2: Δp=0.0000 bar (súrlódás=0.0000 bar, L=1.000 m, Di=71.200 mm, v=0.050 m/s, Re=3562, f=0.0422)
+2;0;Darcy-Weisbach - Teljes nyomásveszteség;MEGFELELT;START -> END teljes nyomásveszteség: 0.0001 bar. Egyenes csövek súrlódása: 0.0001 bar, idomok helyi vesztesége: 0.0001 bar. Megengedett maximum: 0.5000 bar. Térfogatáram: 0.200 l/s.

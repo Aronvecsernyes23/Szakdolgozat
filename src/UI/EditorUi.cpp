@@ -1,5 +1,6 @@
 #include "UI/EditorUi.hpp"
 #include "UI/ValidationPanel.hpp"
+#include "UI/FunctionalTestsPanel.hpp"
 #include "Bom/BillOfMaterials.hpp"
 #include <imgui.h>
 #include <glm/gtc/constants.hpp>
@@ -101,6 +102,8 @@ namespace plumbcad
                 return "Akadályok";
             case 6:
                 return "Darabjegyzék";
+            case 7:
+                return "Tesztesetek";
             }
             return "Objektum";
         }
@@ -161,7 +164,7 @@ namespace plumbcad
         ImGuiIO &mainIo = ImGui::GetIO();
         const float toolbarHeight = 112.0f;
         const float leftPanelWidth = 440.0f;
-        static int activeLeftPanel = 0;
+        int& activeLeftPanel = m_activeLeftPanel;
 
         ImGui::SetNextWindowPos(ImVec2(0.0f, 0.0f), ImGuiCond_Always);
         ImGui::SetNextWindowSize(ImVec2(mainIo.DisplaySize.x, toolbarHeight), ImGuiCond_Always);
@@ -208,6 +211,8 @@ namespace plumbcad
         if (ImGui::Button("Akadályok")) activeLeftPanel = 5;
         ImGui::SameLine();
         if (ImGui::Button("Darabjegyzék")) activeLeftPanel = 6;
+        ImGui::SameLine();
+        if (ImGui::Button("Tesztesetek")) activeLeftPanel = 7;
         ImGui::SameLine();
         ImGui::TextDisabled("Aktív: %s", panelName(activeLeftPanel));
 
@@ -999,7 +1004,8 @@ namespace plumbcad
         if (activeLeftPanel != 0)
         {
             ImGui::SetNextWindowPos(ImVec2(0.0f, toolbarHeight), ImGuiCond_Always);
-            ImGui::SetNextWindowSize(ImVec2(leftPanelWidth, mainIo.DisplaySize.y - toolbarHeight),
+            const float panelWidth = activeLeftPanel == 7 ? std::min(780.0f, mainIo.DisplaySize.x) : leftPanelWidth;
+            ImGui::SetNextWindowSize(ImVec2(panelWidth, mainIo.DisplaySize.y - toolbarHeight),
                                      ImGuiCond_Always);
             ImGui::Begin("Bal oldali panel", nullptr,
                          ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoCollapse);
@@ -1113,148 +1119,89 @@ namespace plumbcad
             }
             else if (activeLeftPanel == 3)
             {
-                ImGui::SeparatorText("Útmutató");
+                if (ImGui::CollapsingHeader("Kezdés és szerkesztés", ImGuiTreeNodeFlags_DefaultOpen))
+                {
+                    ImGui::TextWrapped(
+                        "A felső eszköztáron adj hozzá csövet vagy idomot, majd bal kattintással jelöld ki a jelenetben. "
+                        "Az Objektum panelen állítható a csőtípus, a méret és az egyenes cső hossza (0,04 és 8 m között).");
+                    ImGui::TextWrapped(
+                        "Az 1 a Mozgatás, a 2 a Forgatás, a 3 a Méret eszközt kapcsolja be. A jobb alsó ablakban "
+                        "választhatsz tengelyt, és együtt mozgathatod vagy forgathatod a kapcsolt hálózatrészt. "
+                        "Mozgatásnál a Ctrl 10 mm-es, a Ctrl+Shift 1 mm-es rácsra igazít.");
+                    ImGui::TextWrapped(
+                        "A Csatlakozás / új elem ablakból közvetlenül csatlakoztathatsz idomot vagy csövet egy szabad "
+                        "véghez. Húzás után az egymáshoz illő, 5 cm-en belüli szabad végek automatikusan kapcsolódhatnak.");
+                    ImGui::TextWrapped("A Ctrl+Z visszavonja az utolsó műveletet, a Ctrl+Y újra végrehajtja a visszavont műveletet.");
+                }
 
-                ImGui::SeparatorText("Nézet és kamera");
-                ImGui::BulletText(
-                    "3D módban a felső eszköztárból Perspektivikus / Ortografikus vetület választható.");
-                ImGui::BulletText(
-                    "Wireframe BE: a modellek háromszögháló-élei jelennek meg, kitöltött felületek nélkül.");
-                ImGui::BulletText("3D nézetben: jobb egérgomb + egérmozgatás forgatja a kamerát.");
-                ImGui::BulletText("3D nézetben: W/A/S/D mozgás, Q/E le-fel mozgás, Shift gyorsítás.");
+                if (ImGui::CollapsingHeader("Nézet és kamera"))
+                {
+                    ImGui::TextWrapped(
+                        "A Vetület gombbal válthatsz perspektivikus és ortografikus nézet között. A Wireframe "
+                        "kapcsoló a háromszögháló éleit jeleníti meg.");
+                    ImGui::TextWrapped(
+                        "Tartsd lenyomva a jobb egérgombot a kamera forgatásához. A W/A/S/D mozgatja a kamerát, "
+                        "a Q/E lefelé vagy felfelé viszi, a Shift gyorsít, a görgővel közelíthetsz és távolíthatsz.");
+                }
 
-                ImGui::SeparatorText("Objektumok létrehozása");
-                ImGui::BulletText("Új cső: egyenes csőszakasz beszúrása.");
-                ImGui::BulletText("90° könyök / 45° könyök / T-idom: irányváltó és elágazó idom beszúrása.");
-                ImGui::BulletText("Szűkítő: két külön katalógusméretet összekötő átmeneti idom.");
-                ImGui::BulletText("Szelep: kétcsatlakozásos szerelvény, Darcy prototípus K = 2.00.");
-                ImGui::BulletText("Végzáró: egyetlen csatlakozású lezáró elem.");
-                ImGui::BulletText(
-                    "Nyitott csővégnél az Objektum panel megnyitásakor a jobb oldali „Csatlakozás / új elem” ablakból adhatsz hozzá új csövet vagy idomot.");
-                ImGui::BulletText(
-                    "Az A* START/END és Validáció START/END kiválasztás is ebben a külön csatlakozási ablakban található.");
+                if (ImGui::CollapsingHeader("Útvonaltervezés és akadályok"))
+                {
+                    ImGui::TextWrapped(
+                        "1. Az Objektum panel Csatlakozás / új elem ablakában jelölj ki két különböző szabad véget "
+                        "az A* START és A* END gombbal.");
+                    ImGui::TextWrapped(
+                        "2. Az Akadályok panelen adhatsz hozzá falat, födémet, aknát vagy tiltott zónát. "
+                        "A keresés az A* akadályként aktív elemeket kerüli.");
+                    ImGui::TextWrapped(
+                        "3. Az Útvonal panelen válaszd ki a létrehozandó csőkategóriát, állítsd be a rácsméretet és "
+                        "az akadálytávolságot, majd kattints az Útvonal-lehetőségek keresése gombra.");
+                    ImGui::TextWrapped(
+                        "4. Válassz a talált lehetőségek közül, nézd meg az előnézetet, majd kattints az "
+                        "Ezt az útvonalat végleg létrehozom gombra. Építés után a két végpont lesz a közös validációs START és END.");
+                    ImGui::TextWrapped(
+                        "Ha a nyomvonal és az END csővég átmérője eltér, az automatikus méretváltó idom közvetlenül "
+                        "az END elé kerül. Ehhez megfelelő katalógusméret és szabad hely szükséges.");
+                }
 
-                ImGui::SeparatorText("Színek és kijelölés");
-                ImGui::BulletText("PPR: kék | PVC-U: szürke | Réz: rézbarna.");
-                ImGui::BulletText("Minden építészeti akadály piros.");
-                ImGui::BulletText("A kijelölt elem sárga.");
-                ImGui::BulletText(
-                    "Nyitott csatlakozók: A=cián, B=magenta, C=narancs; az Objektum panel ugyanezekkel a jelölésekkel hivatkozik rájuk.");
+                if (ImGui::CollapsingHeader("Validáció és eredmények"))
+                {
+                    ImGui::TextWrapped(
+                        "A Validáció panelen külön vagy egyszerre futtathatók a hálózati ellenőrzések. A tervezetten szabad "
+                        "csővéget az Objektum panelen a Szándékosan nyitott vég kapcsolóval jelöld.");
+                    ImGui::TextWrapped(
+                        "A Validáció START és END az Objektum panel Csatlakozás / új elem ablakában jelölhető ki. A nyomáspróba a START elem kapcsolt hálózatrészét vizsgálja. A vízsebesség, a "
+                        "Table 6 lefolyás és a Darcy-Weisbach nyomásveszteség a közös START és END közötti útvonalon fut.");
+                    ImGui::TextWrapped(
+                        "Az Eredmények alatt a Vizsgálat oszlop piros hibát, sárga figyelmeztetést és zöld megfelelést "
+                        "mutat. A hibák felül jelennek meg, a számuk a táblázat fölött látszik. Az ID-ra kattintva "
+                        "kijelölheted az érintett elemet, a Részletek alatt pedig elolvashatod a magyarázatot.");
+                    ImGui::TextWrapped(
+                        "A Mentés Excelhez (CSV) a legutóbbi validáció eredményét a munkamappa "
+                        "plumbcad_validation.csv fájljába írja.");
+                }
 
-                ImGui::SeparatorText("Kijelölés és transzformáció");
-                ImGui::BulletText("Bal kattintás: objektum kijelölése.");
-                ImGui::BulletText(
-                    "Az Objektum panel 'Kijelölt elem törlése' gombjával bármely cső vagy idom egyenként törölhető.");
-                ImGui::BulletText("A jobb alsó Szerkesztési eszközök ablak mindig látható; 1: Mozgatás eszköz.");
-                ImGui::BulletText(
-                    "Ha az Objektum panel aktív, közvetlenül fölötte jelenik meg a Csatlakozás / új elem ablak.");
-                ImGui::BulletText("2: Forgatás eszköz.");
-                ImGui::BulletText(
-                    "Mozgatás vagy Forgatás módban a kijelölt objektum közepén CAD-szerű X/Y/Z tengelynyilak jelennek meg.");
-                ImGui::BulletText("Tengelyszínek: X = piros, Y = zöld, Z = kék.");
-                ImGui::BulletText("3: Méret eszköz; a katalógusból választható ki a kívánt csőméret.");
-                ImGui::BulletText("Bal egérhúzás: az aktív eszköz használata.");
-                ImGui::BulletText(
-                    "Mozgatáskor a tárgy a kurzor valódi 3D munkasíkját követi; nincs fix pixel-szorzó.");
-                ImGui::BulletText(
-                    "A jobb alsó Szerkesztési eszközök ablakban választható: Szabad, X, Y vagy Z tengelyű mozgatás.");
-                ImGui::BulletText("Ctrl mozgatás közben: 10 mm világ-raszter; Ctrl+Shift: 1 mm finom raszter.");
-                ImGui::BulletText("Forgatásnál a Szerkesztési eszközök ablakban X/Y/Z világ-tengely választható.");
-                ImGui::BulletText(
-                    "A jelenet központi világkoordináta-rendszere: origó (0,0,0), X piros, Y zöld, Z kék; az XZ sík vízszintes, Y felfelé mutat.");
-                ImGui::BulletText(
-                    "A Forgatás panel mutatja a kijelölt elem abszolút világ X/Y/Z forgásszögeit, így a szögek egyértelműen a központi rendszerhez viszonyíthatók.");
-                ImGui::BulletText(
-                    "Kapcsolt 90°/45°/T-idomnál a Forgatás eszközben kiválasztható, melyik már kapcsolt A/B/C csatlakozás legyen a fix forgáspont és tengely.");
-                ImGui::BulletText(
-                    "90° és 45° idomnál A/B, T-idomnál A/B/C közül csak a ténylegesen kapcsolt pontok választhatók.");
-                ImGui::BulletText(
-                    "A Teljes kapcsolt hálózat együtt forgatása bekapcsolva a kijelölt elem teljes kapcsolt komponense merev egységként fordul.");
-                ImGui::BulletText(
-                    "Forgatásnál az aktuális abszolút szög a tényleges idom-geometriából számolódik, ezért kijelölésváltás után sem nullázódik.");
-                ImGui::BulletText(
-                    "A Kívánt szög mező abszolút célérték: 90° után 45°-ot beírva az idom 45°-ra áll, nem további +45°-ot fordul.");
-                ImGui::BulletText("Forgatásnál Szabad, 15°, 5° vagy 1° szögrács használható.");
-                ImGui::BulletText(
-                    "Forgatás befejezésekor az 5 cm-en belüli nyitott csővégre ugyanúgy ráilleszkedik és irányba igazodik az elem, mint Mozgatás után.");
-                ImGui::BulletText("Shift húzás közben: finomabb mozgatás vagy forgatás.");
+                if (ImGui::CollapsingHeader("Tesztesetek és mintaprojektek", ImGuiTreeNodeFlags_DefaultOpen))
+                {
+                    ImGui::TextWrapped(
+                        "A Tesztesetek fülön 21 funkcionális eset szerepel. A Mit ellenőriz? oszlop leírja a várt "
+                        "viselkedést. A Funkcionális tesztek futtatása után az Eredmény oszlopban látod az egyes esetek státuszát.");
+                    ImGui::TextWrapped(
+                        "A Projekt oszlop Betöltés gombja megnyitja a mintát. A Minták... menüből választhatsz a "
+                        "változatok közül, például az A* bemenete és a megépített útvonal között. Betöltés után a Jelenet panel nyílik meg.");
+                    ImGui::TextWrapped(
+                        "A minták már futtatás előtt is elérhetők. A Részletes jelentés a futás naplóját és az új "
+                        "mintafájlokat mutatja. A jelentések a program melletti tesztfutasok mappába kerülnek.");
+                }
 
-                ImGui::SeparatorText("Kapcsolt hálózatrész mozgatása");
-                ImGui::BulletText("Ha be van kapcsolva, a kijelölt elemhez kapcsolt részhálózat együtt mozog.");
-                ImGui::BulletText("Snap esetén a részhálózat teljes egésze igazodik a cél csőelemhez.");
-                ImGui::BulletText("Ha ki van kapcsolva, csak a kijelölt elem mozog.");
-
-                ImGui::SeparatorText("Snap és csatlakozás");
-                ImGui::BulletText("Elengedéskor a közeli nyitott csővégek automatikusan összekapcsolódnak.");
-                ImGui::BulletText(
-                    "Egyenes-egyenes kapcsolatnál a mozgó rész a cél egyenes cső tengelyének folytatásába igazodik.");
-                ImGui::BulletText("Idom-egyenes kapcsolatnál az idom/cső a csatlakozási tengelyhez igazodik.");
-                ImGui::BulletText("Kék gyűrű: automatikus útvonal kezdőpont.");
-                ImGui::BulletText("Lila gyűrű: automatikus útvonal végpont.");
-                ImGui::BulletText("Narancs gyűrű: közös Validáció START.");
-                ImGui::BulletText("Cián gyűrű: közös Validáció END.");
-                ImGui::BulletText("Zöld gyűrű: már kapcsolt csatlakozás.");
-
-                ImGui::SeparatorText("Kézi idomforgatás");
-                ImGui::BulletText("Csatlakoztatott idomnál kiválasztható, melyik csatlakozás legyen fix.");
-                ImGui::BulletText("A forgatás az aktív Forgatás eszközzel, egérrel történik.");
-                ImGui::BulletText("A külön X/Y/Z fokmegadás szándékosan nincs a felületen.");
-
-                ImGui::SeparatorText("Kompakt idomok");
-                ImGui::BulletText(
-                    "A 90° könyök kompaktabb: a 45° referencia-könyök hajlítási sugarának kb. felét használja.");
-                ImGui::BulletText("A T-idom alapmérete 0.14 m főág / 0.07 m leágazás.");
-                ImGui::BulletText("Az A* által létrehozott 90° könyökök is a kompakt geometriát használják.");
-
-                ImGui::SeparatorText("Akadályok és A*");
-                ImGui::BulletText("Az Építészet panelen fal, födém, akna és tiltott zóna hozható létre.");
-                ImGui::BulletText("Az aktív építészeti objektumokat az A* automatikusan kikerüli.");
-
-                ImGui::SeparatorText("Nyílt validációs referenciák");
-                ImGui::BulletText(
-                    "A nyomáspróba egy kijelölt referenciaelem teljes kapcsolt hálózatrészére fut; minden bemenete a Validáció panelen adható meg.");
-                ImGui::BulletText(
-                    "Az Objektum panelen egyetlen közös Validáció START és Validáció END pontot kell kiválasztani.");
-                ImGui::BulletText(
-                    "A nyílt vízellátási sebesség, Approved Document H Table 6 lejtés/kapacitás és Darcy-Weisbach ugyanazt a közös START -> END útvonalat használja.");
-                ImGui::BulletText(
-                    "A nyílt referencia-profilok ingyenesen hozzáférhető dokumentumokból származnak, de NEM MSZ EN 806 / MSZ EN 1610 megfelelőség-tanúsítások.");
-
-                ImGui::SeparatorText("Validáció");
-                ImGui::BulletText(
-                    "A nyitott csővég ellenőrzés elfogadja a Csővégek résznél szándékos végpontként megjelölt nyitott csatlakozásokat.");
-                ImGui::BulletText(
-                    "Az izolált elem vizsgálat csak a nulla érvényes kapcsolattal rendelkező elemeket tekinti izoláltnak.");
-                ImGui::BulletText(
-                    "Az összefüggőségi vizsgálat minden elemet komponensekre bont, és hibának jelzi a közvetlenül összekapcsolt eltérő csőátmérőket is.");
-                ImGui::BulletText(
-                    "A vízhálózati alapadat-ellenőrzés a projekt összes cső/idom elemének geometriai és katalógus alapadatait vizsgálja.");
-                ImGui::BulletText(
-                    "A nyílt vízellátási sebességprofil START -> END útvonalon fut: 1.5 m/s ajánlott cél, 3.0 m/s NCC felső határ.");
-                ImGui::BulletText(
-                    "A közös Validáció START -> END irány határozza meg a gravitációs vízhaladást is.");
-                ImGui::BulletText(
-                    "A nyílt vízellátási sebesség, Approved Document H Table 6 és Darcy-Weisbach ugyanazt a közös START/END útvonalat használja.");
-                ImGui::BulletText("Az eredménytáblázat sorára kattintva az érintett objektum kijelölhető.");
-
-                ImGui::SeparatorText("Csőkategória színek");
-                ImGui::BulletText("PPR: kék.");
-                ImGui::BulletText("PVC-U foul-drain: szürke.");
-                ImGui::BulletText("Rézcső: rézbarna.");
-                ImGui::BulletText("A kijelölt elem továbbra is sárga kijelölési színt kap.");
-
-                ImGui::SeparatorText("BOM / darabjegyzék");
-                ImGui::BulletText(
-                    "A Darabjegyzék panel automatikusan összesíti a csőhálózat csöveit, idomait és szerelvényeit.");
-                ImGui::BulletText(
-                    "Az egyenes csövek teljes beépített hossza csőtípus és méret szerint külön összegződik.");
-                ImGui::BulletText("A darabjegyzék CSV fájlba exportálható: plumbcad_bom.csv.");
-
-                ImGui::SeparatorText("Mentés és visszavonás");
-                ImGui::BulletText("Mentés: projekt mentése a plumbcad_project.pcad fájlba.");
-                ImGui::BulletText("Betöltés: projekt visszatöltése.");
-                ImGui::BulletText("Ctrl+Z: utolsó művelet visszavonása.");
-                ImGui::BulletText("Ctrl+Y: visszavont művelet újra végrehajtása.");
+                if (ImGui::CollapsingHeader("Mentés és darabjegyzék"))
+                {
+                    ImGui::TextWrapped(
+                        "A felső Mentés és Betöltés gomb az aktív .pcad fájlt használja. Alapértelmezésben ez a "
+                        "munkamappa plumbcad_project.pcad fájlja. Egy minta betöltése után az a fájl lesz aktív.");
+                    ImGui::TextWrapped(
+                        "A Darabjegyzék panel csőtípus és méret szerint csoportosítja az elemeket, és összegzi "
+                        "az egyenes csövek hosszát. A Darabjegyzék exportálása CSV-be a munkamappa plumbcad_bom.csv fájljába ír.");
+                }
             }
             else if (activeLeftPanel == 4)
             {
@@ -1676,6 +1623,10 @@ namespace plumbcad
 
                 ImGui::BulletText(
                     "Az automatikus végpont-illesztő könyökök szög és hajlítási sugár szerint külön tételt kapnak.");
+            }
+            else if (activeLeftPanel == 7)
+            {
+                drawFunctionalTestsPanel(actions.testProjectToLoad);
             }
             ImGui::End();
         }

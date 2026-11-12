@@ -73,6 +73,7 @@ namespace plumbcad
         int validationEndpoint{-1};
         bool saveProject{false};
         bool loadProject{false};
+        std::string testProjectToLoad;
         bool exportBomCsv{false};
         bool exportValidationCsv{false};
         bool toggleProjectionMode{false};
@@ -120,7 +121,11 @@ namespace plumbcad
 
     class EditorUi
     {
+        int m_activeLeftPanel = 0;
+
       public:
+        void showScenePanel() { m_activeLeftPanel = 1; }
+
         UiActions draw(
             PipeNetwork &network, std::vector<SceneObject> &objects,
             const std::vector<ArchitecturalObstacle> &architecturalObstacles, ObjectId &selectedId,

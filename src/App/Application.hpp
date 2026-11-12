@@ -23,6 +23,20 @@ namespace plumbcad
             std::vector<ArchitecturalObstacle> architecturalObstacles;
             ObjectId selectedId{InvalidObjectId};
             std::vector<ObjectId> lastRouteCreatedIds;
+            std::string projectPath;
+            float pressureDesignPressureBar{};
+            float pressureTestPressureBar{};
+            float pressureHoldTimeMin{};
+            float pressureInitialMeasuredPressureBar{};
+            float pressureFinalMeasuredPressureBar{};
+            float pressureAllowedDropBar{};
+            float flowRateLps{};
+            float flowMinVelocityMps{};
+            float flowMaxVelocityMps{};
+            float hydraulicFlowRateLps{};
+            float hydraulicDensityKgM3{};
+            float hydraulicKinematicViscosityM2s{};
+            float hydraulicMaxTotalPressureLossBar{};
 
             ObjectId routeStartId{InvalidObjectId};
             int routeStartEndpoint{-1};
@@ -38,7 +52,7 @@ namespace plumbcad
     public:
         Application();
         ~Application();
-        int run();
+        int run(const std::string& startupProject = {});
     private:
 #ifdef PLUMBCAD_INTEGRATION_TESTS
         friend struct FunctionalTests;

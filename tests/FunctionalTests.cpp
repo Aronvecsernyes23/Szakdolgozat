@@ -9,6 +9,7 @@
 #include <iostream>
 #include <numbers>
 #include <stdexcept>
+#include <vector>
 
 namespace plumbcad
 {
@@ -18,6 +19,25 @@ struct FunctionalTests
     std::filesystem::path output;
     int passed = 0;
     int failed = 0;
+    std::vector<std::filesystem::path> samples;
+
+    void saveSample(const char* filename)
+    {
+        const auto path = output / "pcad" / filename;
+        require(app.saveProject(path.string()), "could not save test project");
+        samples.push_back(path);
+    }
+
+    void verifySamples()
+    {
+        for (const auto& path : samples)
+        {
+            reset();
+            if (!app.loadProject(path.string()))
+                throw std::runtime_error("could not reopen test project: " + path.string());
+        }
+        std::cout << "Reopened " << samples.size() << " PCAD test projects\n";
+    }
 
     static void require(bool condition, const char* reason)
     {
@@ -33,6 +53,11 @@ struct FunctionalTests
         app.m_architecturalObstacles.clear();
         app.m_dragObjectIds.clear();
         app.m_selectedId = InvalidObjectId;
+        app.m_pressureHoldTimeMin = 30;
+        app.m_pressureFinalMeasuredPressureBar = 9;
+        app.m_flowRateLps = 0.20f;
+        app.m_hydraulicFlowRateLps = 0.20f;
+        app.m_hydraulicMaxTotalPressureLossBar = 0.50f;
     }
 
     template<class Test>
@@ -94,12 +119,14 @@ struct FunctionalTests
         const auto a = addPipe(1, 0, 4);
         const auto b = addPipe(1, 0, 4, {0, 0, 1.06f});
         app.m_selectedId = b;
+        saveSample("01a_illesztes_60_mm.pcad");
         app.trySnapSelectedPipe(true);
         require(app.m_network.find(b)->connections[0].isOpen(), "60 mm gap was snapped");
         auto* moving = app.findSceneObject(b);
         moving->transform.rotationEuler.y = 0.18f;
         const auto outward = glm::vec3(moving->transform.matrix() * glm::vec4(0, 0, 1, 0));
         moving->transform.position = glm::vec3(0, 0, 0.53f) + outward * 0.5f;
+        saveSample("01b_illesztes_30_mm.pcad");
         const auto before = glm::distance(app.connectionWorldPosition(a, 1), app.connectionWorldPosition(b, 0));
         app.trySnapSelectedPipe(true);
         const auto after = glm::distance(app.connectionWorldPosition(a, 1), app.connectionWorldPosition(b, 0));
@@ -111,6 +138,7 @@ struct FunctionalTests
                 app.m_network.find(b)->connections[0].connectedElementId == a &&
                 app.m_network.find(a)->connections[1].connectedPointIndex == 0 &&
                 app.m_network.find(b)->connections[0].connectedPointIndex == 1, "not reciprocal");
+        saveSample("01c_illesztes_eredmeny.pcad");
     }
 
     void openEnd(bool intentional)
@@ -124,6 +152,7 @@ struct FunctionalTests
             { return m.objectId == id && m.endpointIndex == 0 && m.severity == ValidationSeverity::Error; });
         require(matches == (intentional ? 0 : 1), "unexpected end result");
         if (intentional) require(count(messages, ValidationSeverity::Error) == 0, "unexpected error");
+        saveSample(intentional ? "03_szandekosan_nyitott_vegek.pcad" : "02_jelolatlan_nyitott_veg.pcad");
     }
 
     void diameter(bool reducer)
@@ -140,6 +169,7 @@ struct FunctionalTests
             net.connect(r, 1, b, 0);
         }
         else net.connect(a, 1, b, 0);
+        saveSample(reducer ? "05_kapcsolat_szukitovel.pcad" : "04_kozvetlen_atmeroelteres.pcad");
         auto messages = app.m_validator.validateConnectedComponents(net);
         print(messages);
         require((count(messages, ValidationSeverity::Error) > 0) == !reducer,
@@ -165,6 +195,7 @@ struct FunctionalTests
         app.setRouteStart(a, 1);
         app.setRouteEnd(b, 0);
         app.m_routePipeTypeIndex = 1;
+        saveSample(checkCategory ? "07a_astar_pvcu_bemenet.pcad" : "06a_astar_fal_bemenet.pcad");
         if (!checkCategory)
             require(app.saveProject((output / "astar_bemenet.pcad").string()), "could not save route input");
         bool searched = app.searchAutomaticRoutes();
@@ -208,6 +239,7 @@ struct FunctionalTests
                   << "; inspected mesh vertices=" << inspectedVertices
                   << "; PVC-U color=" << expectedColor.r << "," << expectedColor.g << "," << expectedColor.b << '\n';
         require(inspectedVertices > 0, "missing mesh");
+        saveSample(checkCategory ? "07b_astar_pvcu_eredmeny.pcad" : "06b_astar_fal_eredmeny.pcad");
         if (!checkCategory)
             require(app.saveProject((output / "astar_elkeszult.pcad").string()), "could not save built route");
     }
@@ -222,6 +254,9 @@ struct FunctionalTests
         app.m_routeGridSizeM = 0.35f;
         app.m_routeClearanceM = 0.10f;
         const bool expectReducer = routeCategory == 0 && startSize != endSize;
+        const bool narrowing = startSize > endSize;
+        saveSample(!expectReducer ? "19a_astar_start_elteres_bemenet.pcad" :
+            (narrowing ? "17a_astar_end_50_32_bemenet.pcad" : "18a_astar_end_32_50_bemenet.pcad"));
         const auto endWorld = app.connectionWorldPosition(end, 0);
         const bool searched = app.searchAutomaticRoutes();
         std::cout << app.m_statusMessage << '\n';
@@ -244,6 +279,8 @@ struct FunctionalTests
         const auto reducerCount = std::count_if(network.elements().begin(), network.elements().end(),
             [](const auto& item) { return item.second.type == PipeElementType::Reducer; });
         require(reducerCount == (expectReducer ? 1 : 0), "incorrect reducer count");
+        saveSample(!expectReducer ? "19b_astar_start_elteres_eredmeny.pcad" :
+            (narrowing ? "17b_astar_end_50_32_eredmeny.pcad" : "18b_astar_end_32_50_eredmeny.pcad"));
         if (!expectReducer) return;
 
         const auto& reducer = *network.find(endNeighbor);
@@ -275,6 +312,7 @@ struct FunctionalTests
         app.findSceneObject(wall)->transform.position = {0, 1, 4.9f};
         app.setRouteStart(start, 1);
         app.setRouteEnd(end, 0);
+        saveSample("20_astar_end_akadaly.pcad");
         require(!app.searchAutomaticRoutes() && app.m_routeAlternatives.empty(), "blocked END reducer was planned");
         std::cout << app.m_statusMessage << '\n';
         require(app.m_statusMessage.find("A* END") != std::string::npos, "missing END reducer diagnostic");
@@ -282,10 +320,14 @@ struct FunctionalTests
                 "failed search modified the network");
     }
 
-    void drainage(float gradient, float flow, const char* expected, bool shouldFail)
+    void drainage(float gradient, float flow, const char* expected, bool shouldFail, const char* sample)
     {
         auto id = addPipe(4, 1, 0);
         app.findSceneObject(id)->transform.rotationEuler.x = std::atan(gradient);
+        app.m_flowRateLps = flow;
+        app.setValidationStart(id, 0);
+        app.setValidationEnd(id, 1);
+        saveSample(sample);
         auto messages = app.m_validator.validateMszEn1610Drainage(app.m_network, app.m_objects,
             id, 0, id, 1, flow);
         print(messages);
@@ -313,6 +355,11 @@ struct FunctionalTests
         const double dynamicBar = 998.2 * velocity * velocity / 200000;
         const double major = f * 4 / d * dynamicBar;
         const double minor = 2.0 * dynamicBar;
+        app.m_hydraulicFlowRateLps = 1.0f;
+        app.setValidationStart(a, 0);
+        app.setValidationEnd(b, 1);
+        app.m_hydraulicMaxTotalPressureLossBar = 0.10f;
+        saveSample("10a_darcy_elfogadott.pcad");
         auto result = calc(0.10f);
         print(result);
         const auto& summary = result.back();
@@ -322,6 +369,8 @@ struct FunctionalTests
                   << " bar; reported=" << actual << " bar\n";
         require(std::abs(actual - major - minor) <= 0.000051, "numeric reference mismatch");
         require(summary.severity == ValidationSeverity::Info, "0.10 bar limit should pass");
+        app.m_hydraulicMaxTotalPressureLossBar = 0.02f;
+        saveSample("10b_darcy_figyelmeztetes.pcad");
         auto exceeded = calc(0.02f);
         print(exceeded);
         require(exceeded.back().severity == ValidationSeverity::Warning, "0.02 bar limit should warn");
@@ -341,6 +390,7 @@ struct FunctionalTests
         app.m_pressureHoldTimeMin = 42;
         app.setValidationStart(a, 0);
         app.setValidationEnd(b, 1);
+        saveSample("11_mentes_es_visszatoltes.pcad");
         const auto path = (output / "mentes_v11.pcad").string();
         require(app.saveProject(path), "save returned false");
         std::ifstream saved(path);
@@ -371,11 +421,15 @@ struct FunctionalTests
 
     void bom()
     {
-        addPipe(1.25f,0,4);
-        addPipe(2.75f,0,4);
-        addPipe(1.5f,1,0);
+        addPipe(1.25f, 0, 4, {-0.75f, 0.25f, 0});
+        addPipe(2.75f, 0, 4, {-0.25f, 0.25f, 0});
+        addPipe(1.5f, 1, 0, {0.25f, 0.25f, 0});
         auto elbow = app.m_network.addElbow90(0.2f, 50);
         app.m_network.setPipeSize(elbow,4);
+        auto elbowObject = app.makeSceneObjectForPipe(*app.m_network.find(elbow));
+        elbowObject.transform.position = {0.75f, 0.25f, 0};
+        app.m_objects.push_back(std::move(elbowObject));
+        saveSample("12_darabjegyzek.pcad");
         const auto summary = buildBillOfMaterials(app.m_network);
         require(summary.totalNetworkElementCount == 4 && summary.straightPipePieceCount == 3 &&
                 summary.fittingPieceCount == 1 && summary.items.size() == 3 &&
@@ -396,7 +450,13 @@ struct FunctionalTests
         const auto a = addPipe(1,0,4);
         auto check = [&](float final) { return app.m_validator.validateMszEn806PressureTest(
             app.m_network, a, 6, 9, 30, 9, final, 0.2f); };
+        app.setValidationStart(a, 0);
+        app.setValidationEnd(a, 1);
+        app.m_pressureFinalMeasuredPressureBar = 8.9f;
+        saveSample("13a_nyomasproba_elfogadott.pcad");
         auto pass = check(8.9f);
+        app.m_pressureFinalMeasuredPressureBar = 8.6f;
+        saveSample("13b_nyomasproba_hibas.pcad");
         auto fail = check(8.6f);
         print(pass); print(fail);
         require(count(pass,ValidationSeverity::Error)==0 && count(pass,ValidationSeverity::Warning)==0 &&
@@ -406,9 +466,15 @@ struct FunctionalTests
     void velocity()
     {
         const auto id = addPipe(1,0,4);
-        for (const auto [q, level] : {std::pair{1.0f, ValidationSeverity::Info},
-                std::pair{2.0f, ValidationSeverity::Warning}, std::pair{3.0f, ValidationSeverity::Error}})
+        app.setValidationStart(id, 0);
+        app.setValidationEnd(id, 1);
+        struct Case { float flow; ValidationSeverity severity; const char* sample; };
+        for (const auto& [q, level, sample] : {Case{1.0f, ValidationSeverity::Info, "14a_sebesseg_ajanlott.pcad"},
+                Case{2.0f, ValidationSeverity::Warning, "14b_sebesseg_figyelmeztetes.pcad"},
+                Case{3.0f, ValidationSeverity::Error, "14c_sebesseg_hibas.pcad"}})
         {
+            app.m_flowRateLps = q;
+            saveSample(sample);
             auto messages = app.m_validator.validateMszEn806FlowVelocity(app.m_network, app.m_objects,
                 id,0,id,1,q);
             print(messages);
@@ -422,6 +488,15 @@ struct FunctionalTests
 
     void validationCsv()
     {
+        // A szintetikus CSV-adatsorokhoz külön, a felületen is validálható hálózat tartozik.
+        const auto a = addPipe(1, 0, 4, {0, 0.25f, -0.5f});
+        const auto b = addPipe(1, 0, 4, {0, 0.25f, 0.5f});
+        app.m_network.connect(a, 1, b, 0);
+        app.m_network.setIntentionalOpenEnd(b, 1, true);
+        app.m_flowRateLps = 2.0f;
+        app.setValidationStart(a, 0);
+        app.setValidationEnd(b, 1);
+        saveSample("21_validacios_csv_mintahalozat.pcad");
         const std::vector<ValidationMessage> messages{
             {ValidationSeverity::Info, 1, 0, "Pressure test", "0.0308 bar"},
             {ValidationSeverity::Warning, 2, -1, "Warning; test", "Value \"2.5\""},
@@ -456,15 +531,15 @@ struct FunctionalTests
         run("05 reducer", [&]{diameter(true);});
         run("06 A* obstacle", [&]{route(false);});
         run("07 A* PVC-U", [&]{route(true);});
-        run("08 Table 6 shallow", [&]{drainage(1.0f/100, 0.5f, "1:40", true);});
-        run("09 Table 6 capacity", [&]{drainage(1.0f/50, 3.0f, "2.80", true);});
+        run("08 Table 6 shallow", [&]{drainage(1.0f/100, 0.5f, "1:40", true, "08_tul_kis_lejtes.pcad");});
+        run("09 Table 6 capacity", [&]{drainage(1.0f/50, 3.0f, "2.80", true, "09_lefolyasi_kapacitas.pcad");});
         run("10 Darcy-Weisbach", [&]{darcy();});
         run("11 save/load v11", [&]{persistence();});
         run("12 BOM CSV", [&]{bom();});
         run("13 pressure", [&]{pressure();});
         run("14 velocity", [&]{velocity();});
-        run("15 Table 6 valid", [&]{drainage(1.0f/30, 0.5f, "MEGFELELT", false);});
-        run("16 Table 6 reverse gradient", [&]{drainage(-1.0f/30, 0.5f, "START", true);});
+        run("15 Table 6 valid", [&]{drainage(1.0f/30, 0.5f, "MEGFELELT", false, "15_megfelelo_lefolyas.pcad");});
+        run("16 Table 6 reverse gradient", [&]{drainage(-1.0f/30, 0.5f, "START", true, "16_visszaemelkedes.pcad");});
         run("17 A* END reducer 50 to 32", [&]{routeEndReducer(4, 2);});
         run("18 A* END reducer 32 to 50", [&]{routeEndReducer(2, 4);});
         run("19 A* START mismatch only", [&]{routeEndReducer(4, 6, 2);});
@@ -478,14 +553,15 @@ int main(int argc, char** argv)
 {
     try
     {
-        if (argc != 2) throw std::runtime_error("Usage: PlumbCAD <output-directory>");
+        if (argc != 2) throw std::runtime_error("Usage: PlumbCADIntegrationTests <output-directory>");
         glfwInit();
         glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);
         plumbcad::FunctionalTests tests;
         tests.output = std::filesystem::absolute(argv[1]);
-        std::filesystem::create_directories(tests.output);
+        std::filesystem::create_directories(tests.output / "pcad");
         std::cout << "GPU=" << glGetString(GL_RENDERER) << "; OpenGL=" << glGetString(GL_VERSION) << '\n';
         tests.execute();
+        tests.verifySamples();
         std::cout << "\nTOTAL passed=" << tests.passed << " failed=" << tests.failed << '\n';
         return tests.failed == 0 ? 0 : 1;
     }

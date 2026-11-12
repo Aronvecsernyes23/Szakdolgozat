@@ -9,7 +9,7 @@
       ],
       "buildRoot": "${projectDir}\\out\\build\\${name}",
       "installRoot": "${projectDir}\\out\\install\\${name}",
-      "cmakeCommandArgs": "-DBUILD_TESTING=ON"
+      "cmakeCommandArgs": "-DBUILD_TESTING=ON -DPLUMBCAD_BUILD_INTEGRATION_TESTS=ON"
     }
   ]
 }

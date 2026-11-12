@@ -114,8 +114,16 @@ namespace plumbcad
         updateEndpointMarkers();
     }
 
-    int Application::run()
+    int Application::run(const std::string& startupProject)
     {
+        if (!startupProject.empty())
+        {
+            if (!loadProject(startupProject))
+                throw std::runtime_error("Nem sikerült betölteni a projektet: " + startupProject);
+            m_projectPath = startupProject;
+            setStatusMessage("Projekt betöltve: " + m_projectPath);
+        }
+
         PCAD_INFO("Application started");
         m_lastFrameTime = glfwGetTime();
         while (!glfwWindowShouldClose(m_window))
@@ -547,16 +555,19 @@ namespace plumbcad
                     setStatusMessage("Mentési hiba: nem sikerült írni a fájlt: " + m_projectPath);
                 }
             }
-            if (actions.loadProject)
+            if (actions.loadProject || !actions.testProjectToLoad.empty())
             {
+                const std::string path = actions.testProjectToLoad.empty() ? m_projectPath : actions.testProjectToLoad;
                 pushUndoSnapshot();
-                if (loadProject(m_projectPath))
+                if (loadProject(path))
                 {
-                    setStatusMessage("Projekt betöltve: " + m_projectPath);
+                    m_projectPath = path;
+                    if (!actions.testProjectToLoad.empty()) m_ui.showScenePanel();
+                    setStatusMessage("Projekt betöltve: " + path);
                 }
                 else
                 {
-                    setStatusMessage("Betöltési hiba: nem található vagy hibás a fájl: " + m_projectPath);
+                    setStatusMessage("Betöltési hiba: nem található vagy hibás a fájl: " + path);
                 }
             }
             if (actions.runValidation)

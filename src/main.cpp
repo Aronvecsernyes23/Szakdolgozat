@@ -2,12 +2,12 @@
 #include <exception>
 #include <iostream>
 
-int main()
+int main(int argc, char** argv)
 {
     try
     {
         plumbcad::Application app;
-        return app.run();
+        return app.run(argc > 1 ? argv[1] : "");
     }
     catch (const std::exception& ex)
     {
