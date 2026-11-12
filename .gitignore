@@ -1,0 +1,30 @@
+# Visual Studio
+.vs/
+
+# Build mappák
+out/
+build/
+cmake-build-*/
+
+# CMake generált fájlok
+CMakeFiles/
+CMakeCache.txt
+cmake_install.cmake
+Makefile
+_deps/
+
+# Fordított fájlok
+*.exe
+*.dll
+*.lib
+*.obj
+*.o
+*.pdb
+
+# Ideiglenes fájlok
+*.log
+*.tmp
+
+# Windows
+Thumbs.db
+desktop.ini
