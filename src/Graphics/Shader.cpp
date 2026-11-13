@@ -60,6 +60,7 @@ namespace plumbcad
     }
 
     void Shader::use() const { glUseProgram(m_program); }
+    void Shader::setBool(const char* name, bool value) const { glUniform1i(glGetUniformLocation(m_program, name), value); }
     void Shader::setMat4(const char* name, const glm::mat4& value) const { glUniformMatrix4fv(glGetUniformLocation(m_program, name), 1, GL_FALSE, glm::value_ptr(value)); }
     void Shader::setVec3(const char* name, const glm::vec3& value) const { glUniform3fv(glGetUniformLocation(m_program, name), 1, glm::value_ptr(value)); }
 }

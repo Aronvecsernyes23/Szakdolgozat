@@ -11,6 +11,7 @@ namespace plumbcad
         ~Shader();
         void loadFromFiles(const std::string& vertexPath, const std::string& fragmentPath);
         void use() const;
+        void setBool(const char* name, bool value) const;
         void setMat4(const char* name, const glm::mat4& value) const;
         void setVec3(const char* name, const glm::vec3& value) const;
         unsigned int id() const { return m_program; }

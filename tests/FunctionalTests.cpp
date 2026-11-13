@@ -138,6 +138,15 @@ struct FunctionalTests
                 app.m_network.find(b)->connections[0].connectedElementId == a &&
                 app.m_network.find(a)->connections[1].connectedPointIndex == 0 &&
                 app.m_network.find(b)->connections[0].connectedPointIndex == 1, "not reciprocal");
+        app.updateEndpointMarkers();
+        require(app.m_endpointMarkers.size() == 2, "connected ends still have ordinary markers");
+        for (const auto& marker : app.m_endpointMarkers)
+        {
+            require(marker.object.unlit, "open-end marker is affected by lighting");
+            require(marker.object.transform.position.z < app.connectionWorldPosition(a, 0).z ||
+                    marker.object.transform.position.z > app.connectionWorldPosition(b, 1).z,
+                    "open-end marker overlaps the connection face");
+        }
         saveSample("01c_illesztes_eredmeny.pcad");
     }
 
@@ -153,6 +162,39 @@ struct FunctionalTests
         require(matches == (intentional ? 0 : 1), "unexpected end result");
         if (intentional) require(count(messages, ValidationSeverity::Error) == 0, "unexpected error");
         saveSample(intentional ? "03_szandekosan_nyitott_vegek.pcad" : "02_jelolatlan_nyitott_veg.pcad");
+        if (intentional) return;
+
+        const auto tee = app.m_network.addTee(0.14f, 0.07f, 50.0f);
+        app.m_objects.push_back(app.makeSceneObjectForPipe(*app.m_network.find(tee)));
+        const glm::vec3 red{1.0f, 0.28f, 0.22f};
+        const glm::vec3 selectedColors[]{{0.10f, 0.90f, 1.00f}, {1.00f, 0.20f, 0.85f}, {1.00f, 0.58f, 0.10f}};
+        const auto& catalog = app.m_network.catalog();
+        for (int category = 0; category < static_cast<int>(catalog.size()); ++category)
+        {
+            app.m_network.setPipeType(tee, category);
+            for (int size = 0; size < static_cast<int>(catalog[category].sizes.size()); ++size)
+            {
+                app.m_network.setPipeSize(tee, size);
+                app.rebuildPipeMesh(tee);
+                app.m_selectedId = tee;
+                app.updateEndpointMarkers();
+
+                std::vector<SceneObject> selected, unselected;
+                app.appendEndpointMarkers(selected);
+                app.m_selectedId = id;
+                app.appendEndpointMarkers(unselected);
+                int teeEnds = 0;
+                for (std::size_t i = 0; i < app.m_endpointMarkers.size(); ++i)
+                {
+                    const auto& marker = app.m_endpointMarkers[i];
+                    if (marker.pipeId != tee) continue;
+                    require(selected[i].color == selectedColors[marker.pointIndex], "selected tee color is wrong");
+                    require(unselected[i].color == red, "unselected tee kept its selection colors");
+                    ++teeEnds;
+                }
+                require(teeEnds == 3, "open tee markers are missing");
+            }
+        }
     }
 
     void diameter(bool reducer)

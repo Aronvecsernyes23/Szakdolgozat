@@ -66,6 +66,7 @@ namespace plumbcad
             // a cső visszakapja a kéket, az akadály a pirosat.
             const glm::vec3 renderColor = object.id == selectedId ? glm::vec3{1.0f, 0.92f, 0.05f} : object.color;
             m_shader.setVec3("uColor", renderColor);
+            m_shader.setBool("uUnlit", object.unlit);
             it->second.draw();
 
             if (object.renderOnTop)

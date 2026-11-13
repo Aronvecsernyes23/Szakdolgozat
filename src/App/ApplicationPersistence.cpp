@@ -442,7 +442,6 @@ namespace plumbcad
         m_selectedId = InvalidObjectId;
         m_validationMessages.clear();
         m_validationHasRun = false;
-        m_endpointMarkers.clear();
 
         // Az A* keresési állapot és az "utolsó létrehozott útvonal" lista
         // nincs a projektfájlban perzisztálva, ezért betöltéskor nem maradhat

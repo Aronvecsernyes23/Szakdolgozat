@@ -8,6 +8,8 @@ namespace plumbcad
     {
     public:
         static MeshData makeBox(const glm::vec3& size);
+        static MeshData makeBeveledBox(const glm::vec3& size, float bevelRatio);
+        static MeshData makePipe(float radius, float wallThickness, float length, int segments = 32);
         static MeshData makeCylinder(float radius, float length, int segments = 32);
         static MeshData makeArrow(
             float length = 1.0f,

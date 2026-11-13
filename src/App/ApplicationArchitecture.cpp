@@ -15,14 +15,15 @@ namespace plumbcad
             }
             return {1.0f,1.0f,1.0f};
         }
-        glm::vec3 architecturalObstacleColor(
-            ArchitecturalObstacleType type)
+        glm::vec3 architecturalObstacleColor(ArchitecturalObstacleType type)
         {
-            (void)type;
-
-            // Minden építészeti akadály egységesen piros.
-            // Így a csőhálózat (kék) és az akadálytér (piros)
-            // már pusztán szín alapján is azonnal elkülönül.
+            switch (type)
+            {
+            case ArchitecturalObstacleType::Wall: return {0.74f, 0.27f, 0.23f};
+            case ArchitecturalObstacleType::Slab: return {0.67f, 0.31f, 0.26f};
+            case ArchitecturalObstacleType::Shaft: return {0.76f, 0.22f, 0.30f};
+            case ArchitecturalObstacleType::ForbiddenZone: return {0.89f, 0.15f, 0.13f};
+            }
             return {0.86f, 0.16f, 0.14f};
         }
     }
@@ -44,7 +45,7 @@ namespace plumbcad
         SceneObject object;
         object.id = obstacle.id;
         object.name = architecturalObstacleTypeName(obstacle.type);
-        object.mesh = MeshFactory::makeBox(obstacle.sizeM);
+        object.mesh = MeshFactory::makeBeveledBox(obstacle.sizeM, 0.24f);
         object.color = architecturalObstacleColor(obstacle.type);
         object.selectable = true;
         return object;
@@ -95,7 +96,7 @@ namespace plumbcad
         ArchitecturalObstacle* obstacle = findArchitecturalObstacle(id);
         SceneObject* object = findSceneObject(id);
         if (!obstacle || !object) return;
-        object->mesh = MeshFactory::makeBox(obstacle->sizeM);
+        object->mesh = MeshFactory::makeBeveledBox(obstacle->sizeM, 0.24f);
         object->transform.scale = {1.0f,1.0f,1.0f};
         m_renderer.uploadObject(*object);
     }

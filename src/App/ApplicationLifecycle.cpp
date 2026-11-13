@@ -687,7 +687,7 @@ namespace plumbcad
             // A sárga A* előnézet csak renderelési segédobjektum:
             // nem része a PipeNetworknek, nem mentődik és nem jelölhető ki.
             renderObjects.insert(renderObjects.end(), m_routePreviewObjects.begin(), m_routePreviewObjects.end());
-            renderObjects.insert(renderObjects.end(), m_endpointMarkers.begin(), m_endpointMarkers.end());
+            appendEndpointMarkers(renderObjects);
 
             // A központi világ XYZ referencia LOGIKÁJA megmarad
             // (origó=(0,0,0), Y függőleges, XZ vízszintes sík),

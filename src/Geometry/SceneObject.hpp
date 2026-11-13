@@ -19,5 +19,6 @@ namespace plumbcad
         // CAD segédgrafika (pl. transzformációs tengelygizmo) esetén
         // a jelölés maradjon látható akkor is, ha részben az objektum belsejéből indul.
         bool renderOnTop{false};
+        bool unlit{false};
     };
 }

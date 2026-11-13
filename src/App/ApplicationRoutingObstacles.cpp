@@ -84,19 +84,26 @@ namespace plumbcad
                 continue;
             }
 
-            // Könyök/T-idom/egyéb csőelem és építészeti akadály:
-            // a valódi mesh világtérbeli AABB-je.
+            // The clearance box uses the original footprint when the display mesh has added detail.
             if (object.mesh.vertices.empty()) continue;
 
             glm::vec3 minP{std::numeric_limits<float>::max()};
             glm::vec3 maxP{std::numeric_limits<float>::lowest()};
             const glm::mat4 model = object.transform.matrix();
 
-            for (const Vertex &vertex : object.mesh.vertices)
+            const auto expand = [&](const glm::vec3& position)
             {
-                const glm::vec3 p = glm::vec3(model * glm::vec4(vertex.position, 1.0f));
+                const glm::vec3 p = glm::vec3(model * glm::vec4(position, 1.0f));
                 minP = glm::min(minP, p);
                 maxP = glm::max(maxP, p);
+            };
+            if (object.mesh.routingBoundsVertices.empty())
+            {
+                for (const Vertex& vertex : object.mesh.vertices) expand(vertex.position);
+            }
+            else
+            {
+                for (const auto& position : object.mesh.routingBoundsVertices) expand(position);
             }
 
             const glm::vec3 padding{routedPipeRadiusM + extraClearance + 0.01f};

@@ -102,6 +102,7 @@ namespace plumbcad
         void handleObjectTransformInput();
         void switchTransformModeFromKeyboard();
         void updateEndpointMarkers();
+        void appendEndpointMarkers(std::vector<SceneObject>& renderObjects) const;
         void initializeWorldAxisReference();
         void updateTransformGizmo();
         void clearTransformGizmo();
@@ -192,7 +193,15 @@ namespace plumbcad
         EditorUi m_ui;
         std::vector<SceneObject> m_objects;
         std::vector<ArchitecturalObstacle> m_architecturalObstacles;
-        std::vector<SceneObject> m_endpointMarkers;
+        struct EndpointMarker
+        {
+            SceneObject object;
+            ObjectId pipeId;
+            int pointIndex;
+            bool hasRole;
+        };
+
+        std::vector<EndpointMarker> m_endpointMarkers;
 
         // Központi világkoordináta-rendszer.
         // Origó = (0,0,0), Y a függőleges tengely, az XZ sík a vízszintes sík.

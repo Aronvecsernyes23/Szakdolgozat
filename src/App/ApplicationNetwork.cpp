@@ -62,106 +62,89 @@ namespace plumbcad
     void Application::updateEndpointMarkers()
     {
         cleanupInvalidConnections();
+        for (const auto& marker : m_endpointMarkers) m_renderer.removeObject(marker.object.id);
         m_endpointMarkers.clear();
 
-        for (const auto &[id, pipe] : m_network.elements())
+        for (const auto& [id, pipe] : m_network.elements())
         {
+            const auto* parent = findSceneObject(id);
+            if (!parent) continue;
+            const glm::mat4 parentTransform = parent->transform.matrix();
+
             for (int pointIndex = 0; pointIndex < static_cast<int>(pipe.connections.size()); ++pointIndex)
             {
-                SceneObject marker;
-                marker.id = EndpointMarkerBaseId + id * 10u + static_cast<ObjectId>(pointIndex);
                 const bool isRouteStart = id == m_routeStartId && pointIndex == m_routeStartEndpoint;
                 const bool isRouteEnd = id == m_routeEndId && pointIndex == m_routeEndEndpoint;
-                const bool isValidationStart =
-                    id == m_validationStartId && pointIndex == m_validationStartEndpoint;
+                const bool isValidationStart = id == m_validationStartId && pointIndex == m_validationStartEndpoint;
                 const bool isValidationEnd = id == m_validationEndId && pointIndex == m_validationEndEndpoint;
+                const bool isMarked = isRouteStart || isRouteEnd || isValidationStart || isValidationEnd;
+                if (!pipe.connections[pointIndex].isOpen() && !isMarked) continue;
+
+                SceneObject marker;
+                marker.id = EndpointMarkerBaseId + id * 10u + static_cast<ObjectId>(pointIndex);
+                marker.selectable = false;
+                marker.unlit = true;
 
                 if (isRouteStart)
                 {
                     marker.name = "Automatikus útvonal kezdőpont";
+                    marker.color = {0.28f, 0.58f, 1.0f};
                 }
                 else if (isRouteEnd)
                 {
                     marker.name = "Automatikus útvonal végpont";
+                    marker.color = {0.77f, 0.40f, 1.0f};
                 }
                 else if (isValidationStart)
                 {
                     marker.name = "Validáció START";
+                    marker.color = {1.0f, 0.65f, 0.18f};
                 }
                 else if (isValidationEnd)
                 {
                     marker.name = "Validáció END";
+                    marker.color = {0.20f, 0.90f, 1.0f};
                 }
                 else
                 {
-                    marker.name = pipe.connections[pointIndex].isOpen() ? "Nyitott csővég" : "Kapcsolt csővég";
+                    marker.name = "Nyitott csővég";
+                    marker.color = {1.0f, 0.28f, 0.22f};
                 }
 
-                const float endpointDiameterMm = pipeEndpointDiameterMm(pipe, pointIndex);
+                const float radius = std::max(0.005f, pipeEndpointDiameterMm(pipe, pointIndex) * 0.0005f);
+                const float width = std::max(0.0035f, radius * 0.22f);
+                marker.mesh = MeshFactory::makeEndpointRing(radius, width, 32);
 
-                const float pipeRadiusM = std::max(0.005f, (endpointDiameterMm / 1000.0f) * 0.5f);
-                const float ringThicknessM = std::max(0.0035f, pipeRadiusM * 0.22f);
-                marker.mesh = MeshFactory::makeEndpointRing(pipeRadiusM, ringThicknessM);
-                marker.transform.position = connectionWorldPosition(id, pointIndex);
-                marker.transform.scale = glm::vec3{1.0f};
+                const glm::vec3 localDirection = isDirectionalFittingType(pipe.type)
+                    ? fittingConnectorDirectionLocal(pipe, pointIndex)
+                    : glm::vec3{0.0f, 0.0f, pointIndex == 0 ? -1.0f : 1.0f};
+                const glm::vec3 worldDirection = glm::vec3(parentTransform * glm::vec4(localDirection, 0.0f));
+                const glm::vec3 outward = glm::length2(worldDirection) > 0.000001f
+                    ? glm::normalize(worldDirection) : localDirection;
 
-                glm::vec3 localDirection{0.0f, 0.0f, 1.0f};
-                if (pipe.type == PipeElementType::StraightPipe)
-                {
-                    localDirection = pointIndex == 0 ? glm::vec3{0.0f, 0.0f, -1.0f} : glm::vec3{0.0f, 0.0f, 1.0f};
-                }
-                else if (isDirectionalFittingType(pipe.type))
-                {
-                    localDirection = fittingConnectorDirectionLocal(pipe, pointIndex);
-                }
+                // Offset the ring from the socket face so the two surfaces never share depth.
+                const float offset = std::clamp(radius * 0.045f, 0.0008f, 0.003f);
+                marker.transform.position = connectionWorldPosition(id, pointIndex) + outward * offset;
+                setObjectRotationFromLocalDirection(marker, {0.0f, 0.0f, 1.0f}, outward);
 
-                const SceneObject *parentObject = findSceneObject(id);
-                if (parentObject)
-                {
-                    glm::vec3 worldDirection =
-                        glm::vec3(parentObject->transform.matrix() * glm::vec4(localDirection, 0.0f));
-                    if (glm::length2(worldDirection) > 0.000001f)
-                    {
-                        setObjectRotationFromLocalDirection(marker, glm::vec3{0.0f, 0.0f, 1.0f},
-                                                            glm::normalize(worldDirection));
-                    }
-                }
-
-                // Endpoint színek:
-                // - kijelölt elem: A=cián, B=magenta, C=narancs
-                // - nem kijelölt elem: nyitott=piros, kapcsolt=zöld
-                const bool isSelectedElement = id == m_selectedId;
-
-                if (isSelectedElement)
-                {
-                    switch (pointIndex)
-                    {
-                    case 0:
-                        marker.color = glm::vec3{0.10f, 0.90f, 1.00f};
-                        break;
-                    case 1:
-                        marker.color = glm::vec3{1.00f, 0.20f, 0.85f};
-                        break;
-                    default:
-                        marker.color = glm::vec3{1.00f, 0.58f, 0.10f};
-                        break;
-                    }
-
-                    marker.transform.scale = glm::vec3{1.0f};
-                }
-                else
-                {
-                    marker.color = pipe.connections[pointIndex].isOpen() ? glm::vec3{1.00f, 0.18f, 0.12f}
-                                                                         : glm::vec3{0.12f, 0.95f, 0.28f};
-
-                    marker.transform.scale = glm::vec3{1.0f};
-                }
-                marker.selectable = false;
-                m_endpointMarkers.push_back(marker);
-
-                // A jelölő mesh mérete a cső aktuális átmérőjéből készül, ezért minden frissítéskor
-                // újra feltöltjük. Így csőméret-váltás/skálázás után a piros/zöld kör is együtt változik.
                 m_renderer.uploadObject(marker);
+                m_endpointMarkers.push_back({std::move(marker), id, pointIndex, isMarked});
+            }
+        }
+    }
+
+    void Application::appendEndpointMarkers(std::vector<SceneObject>& renderObjects) const
+    {
+        for (const auto& marker : m_endpointMarkers)
+        {
+            auto& object = renderObjects.emplace_back(marker.object);
+            if (marker.hasRole || marker.pipeId != m_selectedId) continue;
+
+            switch (marker.pointIndex)
+            {
+            case 0: object.color = {0.10f, 0.90f, 1.00f}; break;
+            case 1: object.color = {1.00f, 0.20f, 0.85f}; break;
+            default: object.color = {1.00f, 0.58f, 0.10f}; break;
             }
         }
     }

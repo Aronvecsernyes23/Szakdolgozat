@@ -31,12 +31,8 @@ namespace plumbcad
     {
         ObjectId id = m_network.addStraightPipe(lengthM, diameterMm);
         const PipeElement *pipe = m_network.find(id);
-        SceneObject obj;
-        obj.id = id;
-        obj.name = "Csőszakasz";
-        obj.mesh = MeshFactory::makeCylinder(((pipe ? pipe->diameterMm : diameterMm) / 1000.0f) * 0.5f,
-                                             pipe ? pipe->lengthM : lengthM);
-        obj.color = pipeCategoryColor(pipe ? pipe->pipeTypeIndex : 0);
+        if (!pipe) return;
+        SceneObject obj = makeSceneObjectForPipe(*pipe);
         obj.transform.position = {0.0f, 0.5f, 0.0f};
         m_objects.push_back(obj);
         m_renderer.uploadObject(obj);
@@ -302,7 +298,7 @@ namespace plumbcad
         else
         {
             obj.name = "Csőszakasz";
-            obj.mesh = MeshFactory::makeCylinder(radius, pipe.lengthM);
+            obj.mesh = MeshFactory::makePipe(radius, pipe.wallThicknessMm * 0.001f, pipe.lengthM);
             obj.color = {0.1f, 0.55f, 0.9f};
         }
         // A geometriai elemtípus (cső/könyök/T-idom/stb.) nem változtatja
@@ -359,7 +355,7 @@ namespace plumbcad
         }
         else
         {
-            object->mesh = MeshFactory::makeCylinder(tubeRadius, pipe->lengthM);
+            object->mesh = MeshFactory::makePipe(tubeRadius, pipe->wallThicknessMm * 0.001f, pipe->lengthM);
         }
         object->color = pipeCategoryColor(pipe->pipeTypeIndex);
 
